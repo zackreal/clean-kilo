@@ -11,7 +11,7 @@ type ChurnCustomer = {
   name: string;
   phone: string;
   lastOrder: string;
-  daysInactive: parseInt;
+  daysInactive: number;
   riskLevel: RiskLevel;
   lostRevenue: string; // Estimasi jika benar-benar churn
 };
