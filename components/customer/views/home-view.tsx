@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "motion/react";
+import { motion, Variants } from "motion/react";
 import { Check, Package, Drop, Wind, TShirt, HandCoins, ArrowRight, SealCheck, CheckCircle, Gift, ClockCounterClockwise, StarHalf, Headset } from "@phosphor-icons/react";
 import {
   CustomerData,
@@ -32,7 +32,7 @@ export function CustomerHomeView({
   const currentIndex = steps.findIndex((step) => step.id === currentStatus);
 
   // Animation Variants
-  const containerVars = {
+  const containerVars: Variants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
@@ -40,7 +40,7 @@ export function CustomerHomeView({
     },
   };
 
-  const itemVars = {
+  const itemVars: Variants = {
     hidden: { opacity: 0, y: 20 },
     show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
   };
