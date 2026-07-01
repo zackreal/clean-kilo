@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "motion/react";
+import { motion, Variants } from "motion/react";
 import { TrendUp, Users, Coin, Star, Sparkle, ChatCircleText, ArrowRight, Clock, Checks } from "@phosphor-icons/react";
 
 const kpis = [
@@ -19,7 +19,7 @@ const activities = [
 ];
 
 export function AdminOverview() {
-  const containerVars = {
+  const containerVars: Variants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
@@ -27,7 +27,7 @@ export function AdminOverview() {
     },
   };
 
-  const itemVars = {
+  const itemVars: Variants = {
     hidden: { opacity: 0, y: 10 },
     show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" } },
   };
