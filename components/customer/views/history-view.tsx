@@ -1,12 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCircle, Receipt, ArrowUUpLeft, WarningCircle, X, DownloadSimple, Printer } from "@phosphor-icons/react";
+import { CheckCircle, Receipt, ArrowUUpLeft, WarningCircle, X, DownloadSimple, PaperPlaneRight, CaretDown } from "@phosphor-icons/react";
 import { motion, AnimatePresence } from "motion/react";
 import { CustomerData, historyItems } from "@/lib/data";
+import { useToast } from "@/components/ui/toast";
 
 export function CustomerHistoryView({ data }: { data: CustomerData }) {
-  const [returnRequested, setReturnRequested] = useState<string | null>(null);
+  const { showToast } = useToast();
+  const [complaintModal, setComplaintModal] = useState<typeof historyItems[0] | null>(null);
+  const [complaintReason, setComplaintReason] = useState("");
+  const [submittedComplaints, setSubmittedComplaints] = useState<string[]>([]);
   const [selectedInvoice, setSelectedInvoice] = useState<typeof historyItems[0] | null>(null);
 
   const containerVars: any = {
@@ -54,7 +58,7 @@ export function CustomerHistoryView({ data }: { data: CustomerData }) {
 
           <div className="space-y-4">
             {historyItems.map((item) => {
-              const isReturning = returnRequested === item.code;
+              const isComplained = submittedComplaints.includes(item.code);
 
               return (
                 <motion.div 
@@ -85,7 +89,7 @@ export function CustomerHistoryView({ data }: { data: CustomerData }) {
                     </div>
                   </div>
 
-                  {isReturning ? (
+                  {isComplained ? (
                     <motion.div 
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: "auto" }}
@@ -94,9 +98,9 @@ export function CustomerHistoryView({ data }: { data: CustomerData }) {
                       <div className="flex gap-3">
                         <WarningCircle size={20} weight="fill" className="text-orange-500 shrink-0 mt-0.5" />
                         <div>
-                          <p className="text-sm font-bold text-orange-900">Pengajuan Pengembalian Diproses</p>
+                          <p className="text-sm font-bold text-orange-900">Tiket Investigasi Sedang Diproses</p>
                           <p className="text-xs text-orange-700 mt-1">
-                            Tim kami akan menghubungi Anda dalam 1x24 jam untuk proses penjemputan barang retur.
+                            Tim CS kami sedang meninjau komplain Anda dan akan menghubungi maksimal 1x24 jam untuk proses ganti rugi/retur.
                           </p>
                         </div>
                       </div>
@@ -112,11 +116,14 @@ export function CustomerHistoryView({ data }: { data: CustomerData }) {
                       </button>
                       <button
                         type="button"
-                        onClick={() => setReturnRequested(item.code)}
+                        onClick={() => {
+                          setComplaintModal(item);
+                          setComplaintReason("");
+                        }}
                         className="group flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-4 py-2 text-xs font-semibold text-zinc-700 transition hover:border-orange-200 hover:bg-orange-50 hover:text-orange-700 active:scale-95"
                       >
-                        <ArrowUUpLeft size={16} className="transition-transform group-hover:-translate-x-1" />
-                        Ajukan Pengembalian
+                        <WarningCircle size={16} className="transition-transform group-hover:scale-110" />
+                        Ajukan Komplain
                       </button>
                     </div>
                   )}
@@ -165,6 +172,95 @@ export function CustomerHistoryView({ data }: { data: CustomerData }) {
           </div>
         </motion.div>
       </motion.div>
+
+      {/* Complaint Modal */}
+      <AnimatePresence>
+        {complaintModal && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setComplaintModal(null)}
+              className="absolute inset-0 bg-zinc-950/60 backdrop-blur-sm"
+            />
+            
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-md mx-auto clean-card p-6 shadow-2xl"
+            >
+              <div className="flex items-center gap-3 mb-6">
+                <div className="bg-orange-100 p-2.5 rounded-full text-orange-600">
+                  <WarningCircle size={24} weight="fill" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-zinc-950">Ajukan Komplain / Klaim</h3>
+                  <p className="text-xs text-zinc-500">Order ID: <span className="font-mono font-bold text-zinc-800">{complaintModal.code}</span></p>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold text-zinc-800 mb-1.5">Kategori Masalah</label>
+                  <div className="relative">
+                    <select 
+                      value={complaintReason}
+                      onChange={(e) => setComplaintReason(e.target.value)}
+                      className="w-full appearance-none rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-zinc-800 outline-none transition focus:border-orange-500 focus:bg-white focus:ring-4 focus:ring-orange-500/10"
+                    >
+                      <option value="" disabled>Pilih kendala...</option>
+                      <option value="hilang">Ada pakaian yang hilang / kurang</option>
+                      <option value="luntur">Pakaian luntur / rusak / menyusut</option>
+                      <option value="kotor">Hasil cucian masih kotor / bau apek</option>
+                      <option value="lainnya">Kendala lainnya</option>
+                    </select>
+                    <CaretDown size={16} className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-zinc-800 mb-1.5">Detail Keluhan</label>
+                  <textarea 
+                    rows={4}
+                    placeholder="Jelaskan pakaian apa yang terkendala dan kronologinya..."
+                    className="w-full resize-none rounded-xl border border-zinc-200 bg-zinc-50 p-4 text-sm text-zinc-800 outline-none transition focus:border-orange-500 focus:bg-white focus:ring-4 focus:ring-orange-500/10"
+                  ></textarea>
+                </div>
+
+                <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 flex gap-3 text-blue-800">
+                  <WarningCircle size={20} className="shrink-0" weight="fill" />
+                  <p className="text-xs leading-relaxed">
+                    Pengajuan komplain yang valid akan segera diinvestigasi. Jika terbukti, 
+                    kami akan melakukan proses <strong>Refund</strong> atau layanan ulang gratis sesuai kebijakan garansi.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 mt-8">
+                <button 
+                  onClick={() => setComplaintModal(null)}
+                  className="flex-1 bg-white hover:bg-zinc-50 text-zinc-700 py-3 rounded-xl text-sm font-bold transition-colors border border-zinc-200 flex items-center justify-center"
+                >
+                  Batal
+                </button>
+                <button 
+                  disabled={!complaintReason}
+                  onClick={() => {
+                    setSubmittedComplaints((prev) => [...prev, complaintModal.code]);
+                    setComplaintModal(null);
+                    showToast("Tiket komplain berhasil dibuat. Tim kami akan segera menindaklanjuti.", "success");
+                  }}
+                  className="flex-1 bg-orange-600 hover:bg-orange-700 disabled:bg-zinc-200 disabled:text-zinc-400 disabled:cursor-not-allowed text-white py-3 rounded-xl text-sm font-bold transition-colors shadow-lg shadow-orange-600/20 flex items-center justify-center gap-2"
+                >
+                  <PaperPlaneRight size={18} weight="bold" /> Kirim Tiket
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* Digital Invoice Modal */}
       <AnimatePresence>
