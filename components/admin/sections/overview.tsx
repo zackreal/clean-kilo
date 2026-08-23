@@ -1,7 +1,8 @@
 "use client";
 
 import { motion, Variants } from "motion/react";
-import { TrendUp, Users, Coin, Star, Sparkle, ChatCircleText, ArrowRight, Clock, Checks } from "@phosphor-icons/react";
+import { TrendUp, Users, Coin, Star, Sparkle, ChatCircleText, ArrowRight, Clock, Checks, DownloadSimple } from "@phosphor-icons/react";
+import { useToast } from "@/components/ui/toast";
 
 const kpis = [
   { label: "Order Bulan Ini", value: "428", icon: TrendUp, trend: "+12.5%", color: "text-blue-600", bg: "bg-blue-50" },
@@ -19,7 +20,8 @@ const activities = [
 ];
 
 export function AdminOverview() {
-  const containerVars: any = {
+  const { showToast } = useToast();
+  const containerVars: Variants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
@@ -195,8 +197,11 @@ export function AdminOverview() {
           </div>
           
           <div className="p-4 bg-zinc-950 mt-auto">
-            <button className="w-full flex items-center justify-center gap-2 text-white text-sm font-bold py-2 rounded-lg hover:bg-zinc-800 transition-colors">
-              Buka Command Center <ArrowRight size={16} />
+            <button 
+              onClick={() => showToast("Laporan hari ini sedang disiapkan dan akan diunduh.", "success")}
+              className="w-full flex items-center justify-center gap-2 text-white text-sm font-bold py-2 rounded-lg hover:bg-zinc-800 transition-colors"
+            >
+              Unduh Laporan Hari Ini <DownloadSimple size={16} />
             </button>
           </div>
         </motion.section>
