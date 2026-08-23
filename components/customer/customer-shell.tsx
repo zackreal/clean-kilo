@@ -78,9 +78,9 @@ export function CustomerShell() {
     <div className="flex min-h-[100dvh] flex-col bg-clean-light font-sans selection:bg-blue-100 selection:text-blue-900">
       {/* Top Navigation (Desktop) / Header (Mobile) */}
       <header className="sticky top-0 z-40 w-full border-b border-zinc-200 bg-white/80 backdrop-blur-md">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6 lg:px-8">
-          <div className="flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 md:px-6 lg:px-8">
+          <div className="flex items-center gap-2 lg:gap-3 shrink-0">
+            <div className="flex h-8 w-8 items-center justify-center shrink-0">
               <svg width="28" height="28" viewBox="0 0 28 28" fill="none" className="shrink-0">
                 <path d="M14 2L26 8V20L14 26L2 20V8L14 2Z" stroke="url(#nlg1-c)" strokeWidth="1.5" fill="none"/>
                 <circle cx="14" cy="14" r="4" fill="url(#nlg2-c)"/>
@@ -101,7 +101,7 @@ export function CustomerShell() {
             </span>
           </div>
           
-          <nav className="hidden items-center gap-2 md:flex">
+          <nav className="hidden items-center gap-1 lg:gap-2 md:flex">
             {customerNavItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
@@ -109,7 +109,7 @@ export function CustomerShell() {
                 <button
                   key={item.id}
                   onClick={() => setActiveTab(item.id)}
-                  className={`flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition-all ${
+                  className={`flex items-center gap-1.5 lg:gap-2 rounded-full px-3 lg:px-5 py-2 lg:py-2.5 text-xs lg:text-sm font-semibold transition-all shrink-0 ${
                     isActive
                       ? "bg-zinc-950 text-white shadow-md hover:scale-[1.02]"
                       : "text-zinc-500 hover:bg-white/50 hover:text-zinc-950"
@@ -122,7 +122,7 @@ export function CustomerShell() {
             })}
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 lg:gap-3 shrink-0">
             {/* Notification Bell */}
             <div ref={notifRef} className="relative">
               <button
