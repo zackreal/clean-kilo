@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCircle, MapPin, Drop, Lightning, Sparkle, NotePencil, Receipt, Package, Truck, HandsClapping, Checks, Motorcycle, TShirt } from "@phosphor-icons/react";
+import { CheckCircle, MapPin, Drop, Lightning, Sparkle, NotePencil, Receipt, Package, Truck, HandsClapping, Checks, Motorcycle, TShirt, CreditCard, X, QrCode } from "@phosphor-icons/react";
 import { motion, AnimatePresence } from "motion/react";
 import { CustomerData } from "@/lib/data";
+import { useToast } from "@/components/ui/toast";
 
 const services = [
   { id: "reguler", name: "Cuci Kiloan Reguler", desc: "Selesai dalam 48 jam", price: "Rp8.000/kg", icon: Drop },
@@ -16,6 +17,9 @@ export function CustomerOrderView({ data }: { data: CustomerData }) {
   const [isSuccess, setIsSuccess] = useState(false);
   const [isConfirmed, setIsConfirmed] = useState(false);
   const [selectedService, setSelectedService] = useState("reguler");
+  const [isPaid, setIsPaid] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const { showToast } = useToast();
 
   const containerVars: any = {
     hidden: { opacity: 0 },
@@ -168,6 +172,9 @@ export function CustomerOrderView({ data }: { data: CustomerData }) {
                   <div className="flex items-center gap-2 mb-6">
                     <span className="flex h-3 w-3 rounded-full bg-emerald-400 animate-pulse"></span>
                     <span className="text-sm font-bold uppercase tracking-widest text-blue-100">Pesanan Aktif</span>
+                    <span className={`ml-auto px-2 py-1 text-[10px] font-bold uppercase tracking-widest rounded-full ${isPaid ? "bg-emerald-500 text-white" : "bg-red-500 text-white animate-pulse"}`}>
+                      {isPaid ? "Lunas" : "Belum Lunas"}
+                    </span>
                   </div>
                   
                   <div className="mb-8">
@@ -175,7 +182,7 @@ export function CustomerOrderView({ data }: { data: CustomerData }) {
                     <h3 className="font-mono text-3xl sm:text-4xl font-bold tracking-tight">CK-2406-118</h3>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-6 p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20">
+                  <div className="grid grid-cols-2 gap-6 p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 mb-4">
                     <div>
                       <p className="text-xs font-medium text-blue-200 uppercase tracking-widest mb-1">Layanan</p>
                       <p className="font-bold text-sm sm:text-base">Cuci + Setrika Express</p>
@@ -185,6 +192,15 @@ export function CustomerOrderView({ data }: { data: CustomerData }) {
                       <p className="font-bold text-sm sm:text-base font-mono">Rp 35.000</p>
                     </div>
                   </div>
+                  
+                  {!isPaid && (
+                    <button 
+                      onClick={() => setShowPaymentModal(true)}
+                      className="w-full flex items-center justify-center gap-2 bg-white text-blue-700 py-3 rounded-xl font-bold text-sm hover:bg-blue-50 transition-colors shadow-lg"
+                    >
+                      <CreditCard size={18} weight="bold" /> Bayar Tagihan (QRIS)
+                    </button>
+                  )}
                 </div>
               </motion.div>
 
@@ -205,11 +221,12 @@ export function CustomerOrderView({ data }: { data: CustomerData }) {
 
                 {/* Tombol Konfirmasi Paling Penting */}
                 <button
+                  disabled={!isPaid}
                   onClick={() => setIsConfirmed(true)}
-                  className="group w-full flex items-center justify-center gap-2 rounded-2xl bg-zinc-950 py-4 text-sm font-bold text-white transition hover:bg-zinc-800 active:scale-[0.98] shadow-lg"
+                  className="group w-full flex items-center justify-center gap-2 rounded-2xl bg-zinc-950 py-4 text-sm font-bold text-white transition hover:bg-zinc-800 disabled:bg-zinc-300 disabled:text-zinc-500 active:scale-[0.98] shadow-lg"
                 >
-                  <Checks size={20} weight="bold" className="text-emerald-400 transition-transform group-hover:scale-125" />
-                  Konfirmasi Pakaian Diterima
+                  <Checks size={20} weight="bold" className={`${!isPaid ? "text-zinc-400" : "text-emerald-400 transition-transform group-hover:scale-125"}`} />
+                  {isPaid ? "Konfirmasi Pakaian Diterima" : "Bayar Tagihan Untuk Selesaikan Order"}
                 </button>
               </motion.div>
 
@@ -470,6 +487,54 @@ export function CustomerOrderView({ data }: { data: CustomerData }) {
               </div>
             </motion.div>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Payment Modal */}
+      <AnimatePresence>
+        {showPaymentModal && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowPaymentModal(false)}
+              className="absolute inset-0 bg-zinc-950/60 backdrop-blur-sm"
+            />
+            
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-sm mx-auto bg-white rounded-3xl p-6 shadow-2xl flex flex-col items-center text-center"
+            >
+              <div className="w-full flex justify-end mb-2">
+                <button onClick={() => setShowPaymentModal(false)} className="text-zinc-400 hover:text-zinc-700"><X size={20} weight="bold" /></button>
+              </div>
+              <h3 className="text-xl font-black text-zinc-950 mb-1">Pembayaran QRIS</h3>
+              <p className="text-sm text-zinc-500 mb-6">Scan kode di bawah menggunakan M-Banking atau E-Wallet.</p>
+              
+              <div className="bg-zinc-50 border-2 border-dashed border-zinc-200 p-8 rounded-2xl mb-6 flex items-center justify-center relative overflow-hidden">
+                <QrCode size={120} className="text-zinc-800 relative z-10" weight="regular" />
+                <div className="absolute inset-0 bg-gradient-to-t from-white/50 to-transparent z-20"></div>
+              </div>
+              
+              <div className="bg-blue-50 text-blue-800 text-xs font-medium px-4 py-2 rounded-lg mb-6 w-full">
+                Total Tagihan: <span className="font-bold text-sm">Rp 35.000</span>
+              </div>
+              
+              <button 
+                onClick={() => {
+                  setIsPaid(true);
+                  setShowPaymentModal(false);
+                  showToast("Pembayaran berhasil diverifikasi. Terima kasih!", "success");
+                }}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-xl font-bold text-sm transition-colors shadow-lg shadow-blue-600/20"
+              >
+                Saya Sudah Bayar
+              </button>
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
     </div>
