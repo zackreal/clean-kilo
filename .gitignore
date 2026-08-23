@@ -33,3 +33,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# presentation and uas files
+NASKAH_PRESENTASI_UAS.md
+QNA_PRESENTASI.md
+STRUKTUR_SLIDE_PPT.md

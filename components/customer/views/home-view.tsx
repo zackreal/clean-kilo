@@ -32,7 +32,7 @@ export function CustomerHomeView({
   const currentIndex = steps.findIndex((step) => step.id === currentStatus);
 
   // Animation Variants
-  const containerVars: Variants = {
+  const containerVars: any = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
@@ -40,7 +40,7 @@ export function CustomerHomeView({
     },
   };
 
-  const itemVars: Variants = {
+  const itemVars: any = {
     hidden: { opacity: 0, y: 20 },
     show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
   };

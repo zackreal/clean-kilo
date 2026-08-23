@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { ToastProvider } from "@/components/ui/toast";
 
 export default function CustomerLayout({
   children,
@@ -23,8 +24,10 @@ export default function CustomerLayout({
   if (!isAuthorized) return null;
 
   return (
-    <div className="min-h-[100dvh] bg-aurora text-zinc-900 antialiased">
-      {children}
-    </div>
+    <ToastProvider>
+      <div className="min-h-[100dvh] bg-aurora text-zinc-900 antialiased">
+        {children}
+      </div>
+    </ToastProvider>
   );
 }

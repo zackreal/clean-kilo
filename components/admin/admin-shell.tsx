@@ -8,6 +8,8 @@ import { AdminFeedbackCenter } from "./sections/feedback-center";
 import { AdminLoyaltyView } from "./sections/loyalty-view";
 import { AdminOverview } from "./sections/overview";
 import { AdminSegmentation } from "./sections/segmentation";
+import { AdminOrders } from "./sections/orders";
+import { AdminUsers } from "./sections/users";
 
 export function AdminShell() {
   const [activeSection, setActiveSection] =
@@ -40,7 +42,9 @@ export function AdminShell() {
 
       <div className="min-w-0 flex-1">
         {activeSection === "summary" && <AdminOverview />}
+        {activeSection === "orders" && <AdminOrders />}
         {activeSection === "customers" && <AdminCustomers />}
+        {activeSection === "users" && <AdminUsers />}
         {activeSection === "segments" && <AdminSegmentation />}
         {activeSection === "retention" && <AdminChurnView />}
         {activeSection === "loyalty" && <AdminLoyaltyView />}

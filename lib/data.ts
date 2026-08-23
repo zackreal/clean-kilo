@@ -13,6 +13,7 @@ import {
   UsersThree,
   ListDashes,
   UserGear,
+  Presentation,
 } from "@phosphor-icons/react";
 
 export type CustomerTab =
@@ -31,7 +32,8 @@ export type AdminSection =
   | "segments"
   | "retention"
   | "loyalty"
-  | "reviews";
+  | "reviews"
+  | "analytics";
 
 export type CustomerData = {
   name: string;
@@ -53,6 +55,17 @@ export type ReviewItem = {
   name: string;
   stars: number;
   text: string;
+  date: string;
+  tags: string[];
+};
+
+export type NotificationItem = {
+  id: string;
+  title: string;
+  message: string;
+  time: string;
+  read: boolean;
+  type: "info" | "success" | "warning" | "promo";
 };
 
 export const initialCustomer: CustomerData = {
@@ -94,6 +107,7 @@ export const adminMenuItems: ReadonlyArray<{
   { id: "retention", label: "Manajemen Churn", icon: BellRinging },
   { id: "loyalty", label: "Aturan Loyalty", icon: GearSix },
   { id: "reviews", label: "Feedback Center", icon: ChatCenteredText },
+  { id: "analytics", label: "Laporan & Analitik", icon: Presentation },
 ];
 
 export const historyItems = [
@@ -118,6 +132,20 @@ export const historyItems = [
     date: "10 Jun",
     total: "Rp 110.000",
   },
+  {
+    code: "CK-2405-048",
+    service: "Cuci + Setrika Express",
+    weight: "5,1 kg",
+    date: "28 Mei",
+    total: "Rp 76.500",
+  },
+  {
+    code: "CK-2405-022",
+    service: "Cuci Kiloan Reguler",
+    weight: "2,8 kg",
+    date: "15 Mei",
+    total: "Rp 28.000",
+  },
 ];
 
 export const reviews: ReviewItem[] = [
@@ -125,13 +153,49 @@ export const reviews: ReviewItem[] = [
     id: "1",
     name: "Dinda Pratiwi",
     stars: 5,
-    text: "Hasil cucian wangi dan rapi, antar-jemput tepat waktu.",
+    text: "Hasil cucian wangi dan rapi, antar-jemput tepat waktu. Sangat memuaskan!",
+    date: "2 jam lalu",
+    tags: ["Wangi Banget", "Tepat Waktu"],
   },
   {
     id: "2",
     name: "Rahmat Hidayat",
     stars: 3,
     text: "Ada satu kemeja yang belum kembali, mohon dicek segera.",
+    date: "5 jam lalu",
+    tags: ["Pakaian Hilang"],
+  },
+  {
+    id: "3",
+    name: "Siti Aminah",
+    stars: 5,
+    text: "Pelayanan sangat cepat dan bersih. Kurir juga sangat sopan. Recommended!",
+    date: "1 hari lalu",
+    tags: ["Sangat Bersih", "Kurir Ramah"],
+  },
+  {
+    id: "4",
+    name: "Budi Santoso",
+    stars: 4,
+    text: "Secara keseluruhan bagus, hanya saja pengiriman agak terlambat 30 menit dari estimasi.",
+    date: "1 hari lalu",
+    tags: ["Terlambat"],
+  },
+  {
+    id: "5",
+    name: "Mega Lestari",
+    stars: 2,
+    text: "Pakaian putih saya jadi kekuningan setelah dicuci. Sangat kecewa dan minta kompensasi.",
+    date: "2 hari lalu",
+    tags: ["Pakaian Luntur", "Kurang Bersih"],
+  },
+  {
+    id: "6",
+    name: "Andi Saputra",
+    stars: 5,
+    text: "Layanan dry cleaning untuk jas saya hasilnya luar biasa. Seperti baru lagi!",
+    date: "3 hari lalu",
+    tags: ["Sangat Bersih", "Pakaian Rapi"],
   },
 ];
 
@@ -139,6 +203,92 @@ export const customerRows = [
   { name: "Dinda Pratiwi", initials: "DP", points: 1280, orders: 14, tier: "Gold" },
   { name: "Rahmat Hidayat", initials: "RH", points: 540, orders: 6, tier: "Silver" },
   { name: "Putri Wulandari", initials: "PW", points: 120, orders: 2, tier: "Regular" },
+];
+
+export const adminNotifications: NotificationItem[] = [
+  {
+    id: "N1",
+    title: "Order Baru Masuk",
+    message: "Budi Santoso baru saja membuat order Cuci Kilat (5kg).",
+    time: "2 menit lalu",
+    read: false,
+    type: "info",
+  },
+  {
+    id: "N2",
+    title: "Ulasan Bintang 5 ⭐",
+    message: "Siti Aminah memberikan rating sempurna untuk layanan Express.",
+    time: "15 menit lalu",
+    read: false,
+    type: "success",
+  },
+  {
+    id: "N3",
+    title: "Peringatan Churn!",
+    message: "3 pelanggan baru masuk zona 'High Risk' - sudah 60+ hari tidak order.",
+    time: "1 jam lalu",
+    read: false,
+    type: "warning",
+  },
+  {
+    id: "N4",
+    title: "Komplain Masuk",
+    message: "Mega Lestari melaporkan pakaian luntur pada order CK-2406-045.",
+    time: "2 jam lalu",
+    read: true,
+    type: "warning",
+  },
+  {
+    id: "N5",
+    title: "Voucher Diklaim",
+    message: "Rahmat Hidayat menggunakan kode COMEBACK20 untuk diskon 20%.",
+    time: "5 jam lalu",
+    read: true,
+    type: "promo",
+  },
+  {
+    id: "N6",
+    title: "Target Bulanan Tercapai!",
+    message: "Pendapatan bulan ini telah melampaui target Rp 30jt. Selamat! 🎉",
+    time: "1 hari lalu",
+    read: true,
+    type: "success",
+  },
+];
+
+export const customerNotifications: NotificationItem[] = [
+  {
+    id: "CN1",
+    title: "Cucian Anda Sedang Dicuci",
+    message: "Order CK-2406-118 sudah masuk proses pencucian. Estimasi selesai: 4 jam.",
+    time: "30 menit lalu",
+    read: false,
+    type: "info",
+  },
+  {
+    id: "CN2",
+    title: "Poin Berhasil Ditambahkan! 🎉",
+    message: "+45 poin dari transaksi terakhir Anda. Total poin aktif: 1.280.",
+    time: "2 jam lalu",
+    read: false,
+    type: "success",
+  },
+  {
+    id: "CN3",
+    title: "Promo Spesial Akhir Bulan!",
+    message: "Dapatkan bonus 2x poin untuk semua layanan Express hingga 30 Juni.",
+    time: "1 hari lalu",
+    read: true,
+    type: "promo",
+  },
+  {
+    id: "CN4",
+    title: "Ulasan Anda Dibalas",
+    message: "Tim CleanKilo telah membalas ulasan Anda. Lihat balasan sekarang.",
+    time: "2 hari lalu",
+    read: true,
+    type: "info",
+  },
 ];
 
 export const formatPoints = (value: number) =>
@@ -152,3 +302,29 @@ export const initials = (name: string) =>
     .map((word) => word[0] ?? "")
     .join("")
     .toUpperCase();
+
+export const formatCurrency = (value: number) =>
+  new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(value);
+
+export const getCurrentDate = () => {
+  const now = new Date();
+  return now.toLocaleDateString("id-ID", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
+
+export const getCurrentTime = () => {
+  const now = new Date();
+  return now.toLocaleTimeString("id-ID", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};

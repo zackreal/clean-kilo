@@ -1,13 +1,14 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { SignOut } from "@phosphor-icons/react";
+import { SignOut, Bell } from "@phosphor-icons/react";
 import {
   CustomerData,
   CustomerTab,
   customerNavItems,
+  customerNotifications,
   initialCustomer,
   initials,
 } from "@/lib/data";
@@ -21,7 +22,30 @@ import { CustomerProfileView } from "./views/profile-view";
 export function CustomerShell() {
   const [activeTab, setActiveTab] = useState<CustomerTab>("home");
   const [customerData, setCustomerData] = useState<CustomerData>(initialCustomer);
+  const [notifOpen, setNotifOpen] = useState(false);
+  const notifRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+
+  const unreadCount = customerNotifications.filter((n) => !n.read).length;
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (notifRef.current && !notifRef.current.contains(e.target as Node)) {
+        setNotifOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const getNotifColor = (type: string) => {
+    switch (type) {
+      case "success": return "bg-emerald-100 text-emerald-600";
+      case "warning": return "bg-amber-100 text-amber-600";
+      case "promo": return "bg-purple-100 text-purple-600";
+      default: return "bg-blue-100 text-blue-600";
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("role");
@@ -98,7 +122,60 @@ export function CustomerShell() {
             })}
           </nav>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            {/* Notification Bell */}
+            <div ref={notifRef} className="relative">
+              <button
+                onClick={() => setNotifOpen(!notifOpen)}
+                className="relative p-2 rounded-xl text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-all"
+              >
+                <Bell size={20} weight={notifOpen ? "fill" : "bold"} />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[8px] font-black text-white ring-2 ring-white">
+                    {unreadCount}
+                  </span>
+                )}
+              </button>
+
+              <AnimatePresence>
+                {notifOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 8, scale: 0.96 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 8, scale: 0.96 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute right-0 top-12 w-80 rounded-2xl border border-zinc-200 bg-white shadow-2xl shadow-zinc-200/50 overflow-hidden z-50"
+                  >
+                    <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-100 bg-zinc-50/50">
+                      <h3 className="text-sm font-bold text-zinc-900">Notifikasi</h3>
+                      <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">
+                        {unreadCount} baru
+                      </span>
+                    </div>
+                    <div className="max-h-72 overflow-y-auto divide-y divide-zinc-50">
+                      {customerNotifications.map((notif) => (
+                        <div
+                          key={notif.id}
+                          className={`px-4 py-3 hover:bg-zinc-50 transition-colors cursor-pointer ${!notif.read ? "bg-blue-50/30" : ""}`}
+                        >
+                          <div className="flex items-start gap-3">
+                            <div className={`mt-0.5 shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${getNotifColor(notif.type)}`}>
+                              <Bell size={12} weight="fill" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <h4 className="text-xs font-bold text-zinc-900 truncate">{notif.title}</h4>
+                              <p className="text-[11px] text-zinc-500 line-clamp-2">{notif.message}</p>
+                              <p className="text-[10px] text-zinc-400 mt-0.5 font-medium">{notif.time}</p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
             <div className="hidden flex-col items-end md:flex">
               <span className="text-sm font-bold text-zinc-950">{customerData.name}</span>
               <span className="rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-cobalt">
@@ -113,7 +190,7 @@ export function CustomerShell() {
             </button>
             <button
               onClick={handleLogout}
-              className="hidden flex h-10 w-10 items-center justify-center rounded-full border border-zinc-200 text-zinc-600 hover:bg-zinc-50 hover:border-red-200 hover:text-red-600 md:flex transition-colors"
+              className="hidden h-10 w-10 items-center justify-center rounded-full border border-zinc-200 text-zinc-600 hover:bg-zinc-50 hover:border-red-200 hover:text-red-600 md:flex transition-colors"
               title="Keluar"
             >
               <SignOut size={18} />
