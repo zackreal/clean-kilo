@@ -206,4 +206,4 @@ The workflow file is located at `.github/workflows/deploy.yml`. It uses `next bu
 
 ## Author
 
-**Giri Purnama** — [github.com/zackreal](https://github.com/zackreal)
+**Zacky Farel Muhammad** — [github.com/zackreal](https://github.com/zackreal)
