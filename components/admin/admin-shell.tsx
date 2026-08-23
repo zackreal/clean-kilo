@@ -10,6 +10,7 @@ import { AdminOverview } from "./sections/overview";
 import { AdminSegmentation } from "./sections/segmentation";
 import { AdminOrders } from "./sections/orders";
 import { AdminUsers } from "./sections/users";
+import { AdminResolutionCenter } from "./sections/resolution-center";
 
 export function AdminShell() {
   const [activeSection, setActiveSection] =
@@ -49,6 +50,7 @@ export function AdminShell() {
         {activeSection === "retention" && <AdminChurnView />}
         {activeSection === "loyalty" && <AdminLoyaltyView />}
         {activeSection === "reviews" && <AdminFeedbackCenter />}
+        {activeSection === "resolution" && <AdminResolutionCenter />}
       </div>
     </section>
   );

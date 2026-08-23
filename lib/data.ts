@@ -14,6 +14,7 @@ import {
   ListDashes,
   UserGear,
   Presentation,
+  Headset,
 } from "@phosphor-icons/react";
 
 export type CustomerTab =
@@ -33,7 +34,8 @@ export type AdminSection =
   | "retention"
   | "loyalty"
   | "reviews"
-  | "analytics";
+  | "analytics"
+  | "resolution";
 
 export type CustomerData = {
   name: string;
@@ -104,10 +106,42 @@ export const adminMenuItems: ReadonlyArray<{
   { id: "customers", label: "Daftar Pelanggan", icon: UsersThree },
   { id: "users", label: "Kelola Staf", icon: UserGear },
   { id: "segments", label: "Segmentasi Pasar", icon: ChartPieSlice },
-  { id: "retention", label: "Manajemen Churn", icon: BellRinging },
-  { id: "loyalty", label: "Aturan Loyalty", icon: GearSix },
+  { id: "retention", label: "Analisis Churn", icon: ClockCounterClockwise },
+  { id: "loyalty", label: "Loyalty Program", icon: Presentation },
   { id: "reviews", label: "Feedback Center", icon: ChatCenteredText },
   { id: "analytics", label: "Laporan & Analitik", icon: Presentation },
+  { id: "resolution", label: "Pusat Resolusi", icon: Headset },
+];
+
+export type ResolutionTicket = {
+  id: string;
+  orderId: string;
+  customerName: string;
+  category: "Pakaian Hilang" | "Pakaian Luntur" | "Hasil Kotor" | "Lainnya";
+  description: string;
+  date: string;
+  status: "Menunggu" | "Diinvestigasi" | "Selesai";
+};
+
+export const resolutionTickets: ResolutionTicket[] = [
+  {
+    id: "TKT-2408-01",
+    orderId: "CK-2408-115",
+    customerName: "Siti Aminah",
+    category: "Pakaian Luntur",
+    description: "Kemeja putih saya kelunturan warna merah jambu dari baju lain. Mohon segera ditindaklanjuti.",
+    date: "Hari Ini, 10:15 WIB",
+    status: "Menunggu",
+  },
+  {
+    id: "TKT-2408-02",
+    orderId: "CK-2408-090",
+    customerName: "Rahmat Hidayat",
+    category: "Pakaian Hilang",
+    description: "Satu celana jeans levis biru saya sepertinya tertukar atau hilang, tidak ada di dalam plastik.",
+    date: "Kemarin, 15:30 WIB",
+    status: "Diinvestigasi",
+  },
 ];
 
 export const historyItems = [
