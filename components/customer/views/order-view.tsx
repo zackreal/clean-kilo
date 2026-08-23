@@ -376,11 +376,26 @@ export function CustomerOrderView({ data }: { data: CustomerData }) {
                   </div>
                 </motion.div>
 
+                {/* Opsi Pengantaran */}
+                <motion.div variants={itemVars} className="space-y-3">
+                  <label className="text-sm font-semibold text-zinc-950">Metode Penyerahan Pakaian</label>
+                  <div className="grid grid-cols-2 gap-3">
+                    <label className="relative flex cursor-pointer items-center justify-center rounded-xl border border-blue-600 bg-blue-50/50 p-3 text-sm font-semibold text-blue-900 ring-1 ring-blue-600 transition-all text-center">
+                      Kurir Antar-Jemput
+                      <input type="radio" name="deliveryMethod" className="sr-only" defaultChecked />
+                    </label>
+                    <label className="relative flex cursor-pointer items-center justify-center rounded-xl border border-zinc-200 bg-white p-3 text-sm font-semibold text-zinc-600 hover:border-zinc-300 transition-all text-center">
+                      Ambil Sendiri ke Toko
+                      <input type="radio" name="deliveryMethod" className="sr-only" />
+                    </label>
+                  </div>
+                </motion.div>
+
                 {/* Catatan untuk Kurir */}
                 <motion.div variants={itemVars} className="space-y-3">
-                  <label className="text-sm font-semibold text-zinc-950">Catatan untuk Kurir (Opsional)</label>
+                  <label className="text-sm font-semibold text-zinc-950">Catatan Tambahan (Opsional)</label>
                   <textarea
-                    placeholder="Contoh: Tolong bel ke rumah nomor 12 pagar hitam, ada satpam di depan."
+                    placeholder="Contoh: Tolong bel ke rumah nomor 12 pagar hitam..."
                     className="w-full min-h-[80px] resize-y rounded-xl border border-zinc-200 bg-white py-3 px-4 text-sm text-zinc-950 outline-none transition-colors focus:border-blue-600 focus:ring-1 focus:ring-blue-600 shadow-sm"
                   />
                 </motion.div>
@@ -521,16 +536,28 @@ export function CustomerOrderView({ data }: { data: CustomerData }) {
                 Total Tagihan: <span className="font-bold text-sm">Rp 35.000</span>
               </div>
               
-              <button 
-                onClick={() => {
-                  setIsPaid(true);
-                  setShowPaymentModal(false);
-                  showToast("Pembayaran berhasil diverifikasi. Terima kasih!", "success");
-                }}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-xl font-bold text-sm transition-colors shadow-lg shadow-blue-600/20"
-              >
-                Saya Sudah Bayar
-              </button>
+              <div className="flex flex-col gap-2 w-full">
+                <button 
+                  onClick={() => {
+                    setIsPaid(true);
+                    setShowPaymentModal(false);
+                    showToast("Pembayaran berhasil diverifikasi. Terima kasih!", "success");
+                  }}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-xl font-bold text-sm transition-colors shadow-lg shadow-blue-600/20"
+                >
+                  Saya Sudah Bayar (QRIS)
+                </button>
+                <button 
+                  onClick={() => {
+                    setIsPaid(true); // Simulasi prototipe
+                    setShowPaymentModal(false);
+                    showToast("Metode Tunai / COD Dipilih. Menunggu verifikasi admin.", "success");
+                  }}
+                  className="w-full bg-white border border-zinc-200 hover:bg-zinc-50 text-zinc-700 py-3.5 rounded-xl font-bold text-sm transition-colors"
+                >
+                  Bayar Tunai Nanti (Di Toko/COD)
+                </button>
+              </div>
             </motion.div>
           </div>
         )}

@@ -11,13 +11,14 @@ type OrderItem = {
   service: string;
   date: string;
   status: OrderStatus;
+  paymentStatus: "lunas" | "belum";
 };
 
 const initialOrders: OrderItem[] = [
-  { id: "CK-2407-101", customer: "Budi Santoso", service: "Cuci Kiloan Reguler", date: "Hari Ini, 09:00", status: "diterima" },
-  { id: "CK-2407-099", customer: "Siti Aminah", service: "Cuci + Setrika Express", date: "Hari Ini, 07:30", status: "dicuci" },
-  { id: "CK-2407-095", customer: "Rahmat Hidayat", service: "Dry Cleaning Premium", date: "Kemarin, 14:00", status: "dikeringkan" },
-  { id: "CK-2407-092", customer: "Dinda Pratiwi", service: "Cuci Kiloan Reguler", date: "Kemarin, 09:00", status: "disetrika" },
+  { id: "CK-2407-101", customer: "Budi Santoso", service: "Cuci Kiloan Reguler", date: "Hari Ini, 09:00", status: "diterima", paymentStatus: "belum" },
+  { id: "CK-2407-099", customer: "Siti Aminah", service: "Cuci + Setrika Express", date: "Hari Ini, 07:30", status: "dicuci", paymentStatus: "belum" },
+  { id: "CK-2407-095", customer: "Rahmat Hidayat", service: "Dry Cleaning Premium", date: "Kemarin, 14:00", status: "dikeringkan", paymentStatus: "lunas" },
+  { id: "CK-2407-092", customer: "Dinda Pratiwi", service: "Cuci Kiloan Reguler", date: "Kemarin, 09:00", status: "disetrika", paymentStatus: "lunas" },
 ];
 
 const statusFlow: OrderStatus[] = ["diterima", "dicuci", "dikeringkan", "disetrika", "selesai"];
@@ -51,6 +52,10 @@ export function AdminOrders() {
     }
   };
 
+  const markAsPaid = (id: string) => {
+    setOrders(orders.map(o => o.id === id ? { ...o, paymentStatus: "lunas" } : o));
+  };
+
   return (
     <motion.div variants={containerVars} initial="hidden" animate="show" className="space-y-8">
       <motion.div variants={itemVars}>
@@ -67,7 +72,8 @@ export function AdminOrders() {
               <tr>
                 <th className="px-6 py-4 font-semibold">ID Pesanan</th>
                 <th className="px-6 py-4 font-semibold">Pelanggan & Layanan</th>
-                <th className="px-6 py-4 font-semibold">Status Saat Ini</th>
+                <th className="px-6 py-4 font-semibold">Status Pengerjaan</th>
+                <th className="px-6 py-4 font-semibold">Pembayaran</th>
                 <th className="px-6 py-4 font-semibold text-right">Aksi</th>
               </tr>
             </thead>
@@ -101,19 +107,34 @@ export function AdminOrders() {
                           {config.label}
                         </div>
                       </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`inline-flex px-2 py-1 text-[10px] font-bold uppercase tracking-widest rounded-full ${order.paymentStatus === 'lunas' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}`}>
+                          {order.paymentStatus === 'lunas' ? 'Lunas' : 'Belum Lunas'}
+                        </span>
+                      </td>
                       <td className="px-6 py-4 text-right">
-                        {!isDone ? (
-                          <button
-                            onClick={() => advanceStatus(order.id, order.status)}
-                            className="inline-flex items-center gap-1 bg-zinc-950 text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-zinc-800 transition-colors active:scale-95"
-                          >
-                            Proses Tahap Berikutnya <CaretRight size={12} weight="bold" />
-                          </button>
-                        ) : (
-                          <span className="inline-flex items-center gap-1 text-emerald-600 text-xs font-bold">
-                            <CheckCircle size={14} weight="fill" /> Selesai
-                          </span>
-                        )}
+                        <div className="flex items-center justify-end gap-2">
+                          {order.paymentStatus === 'belum' && (
+                            <button
+                              onClick={() => markAsPaid(order.id)}
+                              className="inline-flex items-center gap-1 border border-emerald-200 bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-emerald-100 transition-colors active:scale-95"
+                            >
+                              Terima Tunai
+                            </button>
+                          )}
+                          {!isDone ? (
+                            <button
+                              onClick={() => advanceStatus(order.id, order.status)}
+                              className="inline-flex items-center gap-1 bg-zinc-950 text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-zinc-800 transition-colors active:scale-95"
+                            >
+                              Tahap Berikutnya <CaretRight size={12} weight="bold" />
+                            </button>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 text-emerald-600 text-xs font-bold mr-2">
+                              <CheckCircle size={14} weight="fill" /> Selesai
+                            </span>
+                          )}
+                        </div>
                       </td>
                     </motion.tr>
                   );
