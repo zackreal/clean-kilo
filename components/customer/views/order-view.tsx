@@ -460,17 +460,15 @@ export function CustomerOrderView({ data }: { data: CustomerData }) {
                   </div>
                 </div>
 
-                <div className="px-6 pb-6 space-y-3">
-                  <label className="text-sm font-semibold text-zinc-950">Metode Pembayaran</label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <label className="relative flex cursor-pointer items-center justify-center rounded-xl border border-blue-600 bg-blue-50/50 p-3 text-sm font-semibold text-blue-900 ring-1 ring-blue-600 transition-all">
-                      QRIS / E-Wallet
-                      <input type="radio" name="payment" className="sr-only" defaultChecked />
-                    </label>
-                    <label className="relative flex cursor-pointer items-center justify-center rounded-xl border border-zinc-200 bg-white p-3 text-sm font-semibold text-zinc-600 hover:border-zinc-300 transition-all">
-                      Bayar Tunai
-                      <input type="radio" name="payment" className="sr-only" />
-                    </label>
+                <div className="px-6 pb-6">
+                  <div className="rounded-xl bg-blue-50 border border-blue-100 p-4 text-sm text-blue-800 flex gap-3">
+                    <Sparkle size={20} className="shrink-0 mt-0.5 text-blue-600" weight="fill" />
+                    <div>
+                      <p className="font-bold mb-1">Bayar Nanti Saja!</p>
+                      <p className="text-xs leading-relaxed opacity-90">
+                        Tagihan pasti akan muncul di aplikasi setelah pakaian Anda ditimbang oleh admin di toko. Anda bisa membayar via QRIS atau transfer nanti.
+                      </p>
+                    </div>
                   </div>
                 </div>
 
